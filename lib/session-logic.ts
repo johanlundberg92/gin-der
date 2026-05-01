@@ -166,7 +166,10 @@ export function buildSessionResults(
   const expectedNotes = session.gins.length * session.participants.length;
   const completionRate =
     expectedNotes === 0 ? 0 : Number(((notesSubmitted / expectedNotes) * 100).toFixed(1));
-  const topRatedGin = [...gins].sort((left, right) => right.averageOverall - left.averageOverall)[0] ?? null;
+  const topRatedGin =
+    [...gins]
+      .filter((gin) => gin.noteCount > 0)
+      .sort((left, right) => right.averageOverall - left.averageOverall)[0] ?? null;
 
   return {
     sessionId: session.id,

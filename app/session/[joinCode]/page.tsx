@@ -47,7 +47,7 @@ export default async function SessionPage({ params }: PageProps) {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-amber-200/70">
-              Join code {session.joinCode}
+              {messages.common.joinCode} {session.joinCode}
             </p>
             <h1 className="mt-2 font-[family-name:var(--font-serif)] text-3xl text-white sm:text-4xl">
               {session.name}
@@ -71,7 +71,21 @@ export default async function SessionPage({ params }: PageProps) {
         </div>
       </section>
 
-      {!participant ? (
+      {!participant && session.stage === SessionStage.COMPLETED ? (
+        <section className="glass-panel rounded-[2rem] p-5 sm:p-6">
+          <p className="text-xs uppercase tracking-[0.25em] text-amber-200/70">
+            {messages.session.revealTitle}
+          </p>
+          <h2 className="mt-3 font-[family-name:var(--font-serif)] text-3xl text-white">
+            {messages.participant.sessionClosedTitle}
+          </h2>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-300">
+            {messages.participant.sessionClosedDescription}
+          </p>
+        </section>
+      ) : null}
+
+      {!participant && session.stage !== SessionStage.COMPLETED ? (
         <JoinSessionCard sessionId={session.id} joinCode={session.joinCode} sessionName={session.name} />
       ) : null}
 

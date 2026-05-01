@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SessionStage } from "@prisma/client";
@@ -39,12 +39,73 @@ export function AdminSessionControls({
   const { messages } = useLocale();
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState("");
+  const [copiedTarget, setCopiedTarget] = useState<"code" | "link" | null>(null);
+  const [copyFeedback, setCopyFeedback] = useState("");
+  const copyResetTimeoutRef = useRef<number | null>(null);
   const actionLabel = useMemo(
     () => getAdvanceLabel(stage, currentGinIndex, ginCount, messages),
     [currentGinIndex, ginCount, messages, stage],
   );
 
   const activeGin = gins[currentGinIndex];
+
+  useEffect(() => {
+    return () => {
+      if (copyResetTimeoutRef.current !== null) {
+        window.clearTimeout(copyResetTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const scheduleCopyReset = () => {
+    if (copyResetTimeoutRef.current !== null) {
+      window.clearTimeout(copyResetTimeoutRef.current);
+    }
+
+    copyResetTimeoutRef.current = window.setTimeout(() => {
+      setCopiedTarget(null);
+      setCopyFeedback("");
+      copyResetTimeoutRef.current = null;
+    }, 2000);
+  };
+
+  const copyText = async (value: string) => {
+    if (navigator.clipboard?.writeText && window.isSecureContext) {
+      await navigator.clipboard.writeText(value);
+      return true;
+    }
+
+    const input = document.createElement("textarea");
+    input.value = value;
+    input.setAttribute("readonly", "");
+    input.style.position = "absolute";
+    input.style.left = "-9999px";
+    document.body.appendChild(input);
+    input.select();
+
+    const copied = document.execCommand("copy");
+    document.body.removeChild(input);
+    return copied;
+  };
+
+  const handleCopy = async (value: string, target: "code" | "link") => {
+    try {
+      const copied = await copyText(value);
+
+      if (!copied) {
+        setCopiedTarget(null);
+        setCopyFeedback(messages.common.copyFailed);
+        return;
+      }
+
+      setCopiedTarget(target);
+      setCopyFeedback("");
+      scheduleCopyReset();
+    } catch {
+      setCopiedTarget(null);
+      setCopyFeedback(messages.common.copyFailed);
+    }
+  };
 
   const handleAdvance = async () => {
     setLoading(true);
@@ -84,11 +145,11 @@ export function AdminSessionControls({
           </div>
           <button
             type="button"
-            onClick={() => navigator.clipboard.writeText(joinCode)}
+            onClick={() => handleCopy(joinCode, "code")}
             className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/6 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
           >
             <Copy className="h-4 w-4" />
-            {messages.common.copyJoinCode}
+            {copiedTarget === "code" ? messages.common.copied : messages.common.copyJoinCode}
           </button>
         </div>
 
@@ -152,11 +213,11 @@ export function AdminSessionControls({
             <p className="mt-3 break-all text-sm leading-6 text-stone-300">{joinUrl}</p>
             <button
               type="button"
-              onClick={() => navigator.clipboard.writeText(joinUrl)}
+              onClick={() => handleCopy(joinUrl, "link")}
               className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/6 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10"
             >
               <Copy className="h-4 w-4" />
-              {messages.common.copyJoinLink}
+              {copiedTarget === "link" ? messages.common.copied : messages.common.copyJoinLink}
             </button>
           </div>
           <Link
@@ -180,6 +241,7 @@ export function AdminSessionControls({
             </p>
           </div>
         </div>
+        {copyFeedback ? <p className="mt-3 text-sm text-rose-300">{copyFeedback}</p> : null}
       </div>
     </section>
   );

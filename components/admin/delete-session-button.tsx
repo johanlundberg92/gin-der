@@ -9,27 +9,13 @@ import { adminCookieName } from "@/lib/constants";
 type DeleteSessionButtonProps = {
   sessionId: string;
   sessionName: string;
-  storedAdminPin?: string;
   redirectTo?: string;
   className?: string;
 };
 
-function getCookieValue(name: string) {
-  const prefix = `${name}=`;
-
-  for (const entry of document.cookie.split("; ")) {
-    if (entry.startsWith(prefix)) {
-      return decodeURIComponent(entry.slice(prefix.length));
-    }
-  }
-
-  return "";
-}
-
 export function DeleteSessionButton({
   sessionId,
   sessionName,
-  storedAdminPin,
   redirectTo,
   className,
 }: DeleteSessionButtonProps) {
@@ -38,33 +24,12 @@ export function DeleteSessionButton({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const resolveAdminPin = () => {
-    if (storedAdminPin?.trim().length) {
-      return storedAdminPin;
-    }
-
-    const cookiePin = getCookieValue(adminCookieName(sessionId));
-    if (cookiePin.trim().length) {
-      return cookiePin;
-    }
-
-    const promptedPin = window.prompt(messages.admin.deleteSessionPinPrompt) ?? "";
-    return promptedPin.trim();
-  };
-
   const handleDelete = async () => {
     const confirmed = window.confirm(
       messages.admin.deleteSessionConfirm.replace("{sessionName}", sessionName),
     );
 
     if (!confirmed) {
-      return;
-    }
-
-    const adminPin = resolveAdminPin();
-
-    if (!adminPin) {
-      setError(messages.admin.deleteSessionPinRequired);
       return;
     }
 
@@ -76,7 +41,6 @@ export function DeleteSessionButton({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ adminPin }),
     });
 
     const payload = await response.json();

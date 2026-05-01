@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { adminCookieName } from "@/lib/constants";
+import { getRequestI18n } from "@/lib/request-locale";
 import { prisma } from "@/lib/prisma";
 import { listSessions } from "@/lib/session-data";
 import {
@@ -34,12 +36,13 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const { messages } = await getRequestI18n();
   const payload = await request.json();
   const parsed = createSessionSchema.safeParse(payload);
 
   if (!parsed.success) {
     return NextResponse.json(
-      { error: "Invalid session payload.", issues: parsed.error.flatten() },
+      { error: messages.errors.invalidSessionPayload, issues: parsed.error.flatten() },
       { status: 400 },
     );
   }
@@ -52,7 +55,7 @@ export async function POST(request: Request) {
       : null;
 
   if (eventDate && Number.isNaN(eventDate.getTime())) {
-    return NextResponse.json({ error: "Invalid event date." }, { status: 400 });
+    return NextResponse.json({ error: messages.errors.invalidEventDate }, { status: 400 });
   }
 
   const session = await prisma.session.create({
@@ -81,8 +84,14 @@ export async function POST(request: Request) {
     },
   });
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     session,
     adminPin,
   });
+  response.cookies.set(adminCookieName(session.id), adminPin, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+    sameSite: "lax",
+  });
+  return response;
 }

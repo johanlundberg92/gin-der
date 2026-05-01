@@ -6,16 +6,15 @@ import { getStageLabel } from "@/lib/i18n";
 import { getRequestI18n } from "@/lib/request-locale";
 import { listSessions } from "@/lib/session-data";
 
-const dateFormatter = new Intl.DateTimeFormat("en", {
-  dateStyle: "medium",
-  timeStyle: "short",
-});
-
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const { messages } = await getRequestI18n();
+  const { locale, messages } = await getRequestI18n();
   const sessions = await listSessions();
+  const dateFormatter = new Intl.DateTimeFormat(locale, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 
   return (
     <main className="grid flex-1 gap-5 py-4 lg:grid-cols-[0.95fr_1.05fr]">
@@ -50,7 +49,7 @@ export default async function AdminPage() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <p className="text-xs uppercase tracking-[0.25em] text-amber-200/70">
-                      Join code {session.joinCode}
+                      {messages.common.joinCode} {session.joinCode}
                     </p>
                     <h3 className="mt-1 text-lg font-semibold text-white">{session.name}</h3>
                     <p className="mt-2 text-sm text-stone-300">

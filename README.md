@@ -59,6 +59,8 @@ Run the local verification flow:
 ./scripts/test-local.sh
 ```
 
+This now runs lint/build plus an isolated Docker-backed smoke flow that exercises session creation, join, note submission, stage advancement, results, and completed-session join rejection.
+
 ## Docker
 
 Bring up the production-style stack locally:
@@ -92,6 +94,7 @@ Participant QR codes use `PUBLIC_BASE_URL`, which defaults to `http://192.168.1.
 | Rebuild/restart local dev after app or Docker changes | `./scripts/dev-rebuild.sh` |
 | Seed demo data into the local Docker database | `./scripts/seed-demo.sh` |
 | Run local checks | `./scripts/test-local.sh` |
+| Run the isolated end-to-end smoke flow only | `./scripts/smoke-local-flow.sh` |
 | Run the production-style stack locally | `docker compose up --build` |
 
 If local port `3000` is already in use, prefix commands with something like:

@@ -52,7 +52,7 @@ export default async function AdminSessionPage({ params }: PageProps) {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.25em] text-amber-200/70">
-              {messages.admin.sessionControlsLabel} · join code {session.joinCode}
+              {messages.admin.sessionControlsLabel} · {messages.common.joinCode} {session.joinCode}
             </p>
             <h1 className="mt-2 font-[family-name:var(--font-serif)] text-4xl text-white">
               {session.name}
@@ -159,27 +159,26 @@ export default async function AdminSessionPage({ params }: PageProps) {
             </div>
           </section>
 
-          <section className="glass-panel rounded-[2rem] p-5 sm:p-6">
-            <h2 className="font-[family-name:var(--font-serif)] text-3xl text-white">
-              {messages.admin.deleteSession}
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-300">
-              {messages.admin.deleteSessionDescription}
-            </p>
-            <div className="mt-5 max-w-sm">
-              <DeleteSessionButton
-                sessionId={session.id}
-                sessionName={session.name}
-                storedAdminPin={storedPin}
-                redirectTo="/admin"
-                className="w-full rounded-full border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-100 hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </div>
-          </section>
-
           <ResultsPanel results={results} messages={messages} />
         </>
       )}
+
+      <section className="glass-panel rounded-[2rem] p-5 sm:p-6">
+        <h2 className="font-[family-name:var(--font-serif)] text-3xl text-white">
+          {messages.admin.deleteSession}
+        </h2>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-300">
+          {messages.admin.deleteSessionDescription}
+        </p>
+        <div className="mt-5 max-w-sm">
+          <DeleteSessionButton
+            sessionId={session.id}
+            sessionName={session.name}
+            redirectTo="/admin"
+            className="w-full rounded-full border border-rose-400/30 bg-rose-500/10 px-4 py-3 text-sm font-semibold text-rose-100 hover:bg-rose-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+          />
+        </div>
+      </section>
     </main>
   );
 }

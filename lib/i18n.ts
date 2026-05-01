@@ -16,9 +16,11 @@ export const messages = {
       appName: "gin-der",
       swedish: "Svenska",
       english: "English",
+      joinCode: "Anslutningskod",
       copyJoinCode: "Kopiera kod",
       copyJoinLink: "Kopiera länk",
       copied: "Kopierad",
+      copyFailed: "Kunde inte kopiera",
       noDate: "Inget datum satt ännu",
       noDateSet: "Inget smakningsdatum satt",
       noAbv: "ABV saknas",
@@ -74,6 +76,7 @@ export const messages = {
       description: "Använd koden från värden för att gå direkt till den aktiva smakningsvyn.",
       openTasting: "Öppna smakningen",
       codePlaceholder: "ABC123",
+      invalidCode: "Skriv en giltig kod för att öppna smakningen.",
     },
     admin: {
       dashboardLabel: "Adminpanel",
@@ -143,6 +146,7 @@ export const messages = {
       overallScore: "Helhetsbetyg",
     },
     participant: {
+      joinSessionEyebrow: "Gå med i {sessionName}",
       joinSessionTitle: "Lägg till ditt smakningsnamn",
       joinSessionDescription:
         "När du har gått med är den här enheten kopplad till ditt smakningskort resten av sessionen.",
@@ -150,6 +154,9 @@ export const messages = {
       joining: "Ansluter...",
       joinButton: "Gå med i smakningen",
       joinError: "Kunde inte ansluta till den här sessionen.",
+      sessionClosedTitle: "Smakningen är avslutad",
+      sessionClosedDescription:
+        "Den här sessionen är redan avslutad och tar inte emot nya deltagare längre.",
       tastingCard: "Smakningskort",
       anonymousPourDescription:
         "Poängsätt det här glaset medan det fortfarande är anonymt. Avslöjandet fyller i flaskdetaljerna när värden går vidare.",
@@ -206,15 +213,31 @@ export const messages = {
       RESULTS: "Resultat",
       COMPLETED: "Avslutad",
     },
+    errors: {
+      sessionNotFound: "Sessionen hittades inte.",
+      invalidSessionPayload: "Ogiltigt sessionsunderlag.",
+      invalidEventDate: "Ogiltigt smakningsdatum.",
+      validParticipantName: "Ange ett giltigt deltagarnamn.",
+      tastingSessionEnded: "Den här smakningen är redan avslutad.",
+      adminPinRequired: "Admin-PIN krävs.",
+      invalidAdminPin: "Ogiltig admin-PIN.",
+      tastingCardMissingFields: "Smakningskortet saknar obligatoriska fält.",
+      participantSessionNotFound: "Deltagarsessionen hittades inte.",
+      ginNotFoundForSession: "Gin hittades inte för den här sessionen.",
+      tastingNotOpen: "Smakningen är inte öppen för nya kort just nu.",
+      currentGinOnly: "Du kan bara spara kort för glaset som är aktivt just nu.",
+    },
   },
   en: {
     common: {
       appName: "gin-der",
       swedish: "Svenska",
       english: "English",
+      joinCode: "Join code",
       copyJoinCode: "Copy code",
       copyJoinLink: "Copy link",
       copied: "Copied",
+      copyFailed: "Could not copy",
       noDate: "No date set yet",
       noDateSet: "No tasting date set",
       noAbv: "ABV not listed",
@@ -270,6 +293,7 @@ export const messages = {
       description: "Use the short code from the host to jump straight into the live tasting screen.",
       openTasting: "Open tasting",
       codePlaceholder: "ABC123",
+      invalidCode: "Enter a valid code to open the tasting.",
     },
     admin: {
       dashboardLabel: "Admin dashboard",
@@ -340,6 +364,7 @@ export const messages = {
       overallScore: "Overall score",
     },
     participant: {
+      joinSessionEyebrow: "Join {sessionName}",
       joinSessionTitle: "Add your tasting name",
       joinSessionDescription:
         "Once you join, this device stays linked to your tasting card for the rest of the session.",
@@ -347,6 +372,9 @@ export const messages = {
       joining: "Joining...",
       joinButton: "Join tasting",
       joinError: "Could not join this session.",
+      sessionClosedTitle: "This tasting is closed",
+      sessionClosedDescription:
+        "This session has already been completed and is no longer accepting new participants.",
       tastingCard: "Tasting card",
       anonymousPourDescription:
         "Score this pour while it's still anonymous. The reveal screen will fill in the bottle details after the host advances.",
@@ -402,6 +430,20 @@ export const messages = {
       REVEAL: "Reveal",
       RESULTS: "Results",
       COMPLETED: "Completed",
+    },
+    errors: {
+      sessionNotFound: "Session not found.",
+      invalidSessionPayload: "Invalid session payload.",
+      invalidEventDate: "Invalid tasting date.",
+      validParticipantName: "Please provide a valid participant name.",
+      tastingSessionEnded: "This tasting session has already ended.",
+      adminPinRequired: "Admin PIN is required.",
+      invalidAdminPin: "Invalid admin PIN.",
+      tastingCardMissingFields: "The tasting card is missing required fields.",
+      participantSessionNotFound: "Participant session not found.",
+      ginNotFoundForSession: "Gin not found for this session.",
+      tastingNotOpen: "The tasting round is not open for new cards right now.",
+      currentGinOnly: "You can only save notes for the currently active pour.",
     },
   },
 } as const;

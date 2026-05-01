@@ -1,10 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { useLocale } from "@/components/locale-provider";
-import { participantCookieName } from "@/lib/constants";
 
 type JoinSessionCardProps = {
   sessionId: string;
@@ -13,7 +11,6 @@ type JoinSessionCardProps = {
 };
 
 export function JoinSessionCard({ sessionId, joinCode, sessionName }: JoinSessionCardProps) {
-  const router = useRouter();
   const { messages } = useLocale();
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,14 +37,14 @@ export function JoinSessionCard({ sessionId, joinCode, sessionName }: JoinSessio
       return;
     }
 
-    document.cookie = `${participantCookieName(sessionId)}=${encodeURIComponent(payload.participant.accessToken)}; Path=/; Max-Age=2592000; SameSite=Lax`;
-    router.push(`/session/${joinCode}`);
-    router.refresh();
+    window.location.replace(`/session/${joinCode}`);
   };
 
   return (
     <section className="glass-panel rounded-[2rem] p-5 sm:p-6">
-      <p className="text-xs uppercase tracking-[0.25em] text-amber-200/70">Join {sessionName}</p>
+      <p className="text-xs uppercase tracking-[0.25em] text-amber-200/70">
+        {messages.participant.joinSessionEyebrow.replace("{sessionName}", sessionName)}
+      </p>
       <h2 className="mt-2 font-[family-name:var(--font-serif)] text-3xl text-white">
         {messages.participant.joinSessionTitle}
       </h2>

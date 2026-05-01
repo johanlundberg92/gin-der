@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { cookies } from "next/headers";
 import { Inter, Playfair_Display } from "next/font/google";
 
@@ -46,9 +47,12 @@ export default async function RootLayout({
         <LocaleProvider locale={locale} messages={messages}>
           <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 pb-12 pt-6 sm:px-6 lg:px-8">
             <div className="mb-5 flex items-center justify-between gap-4">
-              <p className="font-[family-name:var(--font-serif)] text-lg text-stone-100">
+              <Link
+                href="/"
+                className="font-[family-name:var(--font-serif)] text-lg text-stone-100 hover:text-amber-200 transition-colors"
+              >
                 {messages.common.appName}
-              </p>
+              </Link>
               <LanguageSwitcher />
             </div>
             {children}

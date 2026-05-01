@@ -11,3 +11,4 @@ export PRISMA_HIDE_UPDATE_MESSAGE=1
 
 npm run prisma:generate
 npm run check
+./scripts/smoke-local-flow.sh

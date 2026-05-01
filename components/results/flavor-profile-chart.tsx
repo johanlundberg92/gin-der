@@ -30,7 +30,21 @@ export function FlavorProfileChart({
 
   return (
     <div className="field-shell rounded-3xl p-4">
-      <p className="text-sm font-semibold text-white">{title}</p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm font-semibold text-white">{title}</p>
+        <div className="flex flex-wrap items-center gap-2 text-xs text-stone-300">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-3 py-1">
+            <span className="h-2.5 w-2.5 rounded-full bg-[#d7a85b]" />
+            {messages.results.groupSeries}
+          </span>
+          {participantNote ? (
+            <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/6 px-3 py-1">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#7dd3c7]" />
+              {messages.results.youSeries}
+            </span>
+          ) : null}
+        </div>
+      </div>
       <div className="mt-4 h-72 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <RadarChart data={data}>
@@ -44,7 +58,7 @@ export function FlavorProfileChart({
               dataKey="group"
               stroke="#d7a85b"
               fill="#d7a85b"
-              fillOpacity={0.25}
+              fillOpacity={0.2}
               strokeWidth={2}
             />
             {participantNote ? (
@@ -53,8 +67,9 @@ export function FlavorProfileChart({
                 dataKey="yours"
                 stroke="#7dd3c7"
                 fill="#7dd3c7"
-                fillOpacity={0.16}
-                strokeWidth={2}
+                fillOpacity={0.1}
+                strokeWidth={3}
+                strokeDasharray="6 4"
               />
             ) : null}
           </RadarChart>

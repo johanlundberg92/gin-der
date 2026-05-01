@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { emitSessionEvent } from "@/lib/events";
+import { getRequestI18n } from "@/lib/request-locale";
 import { prisma } from "@/lib/prisma";
 import {
   getAdvanceLabel,
@@ -17,12 +18,13 @@ type RouteContext = {
 };
 
 export async function POST(request: Request, context: RouteContext) {
+  const { messages } = await getRequestI18n();
   const { sessionId } = await context.params;
   const payload = await request.json();
   const parsed = advanceSessionSchema.safeParse(payload);
 
   if (!parsed.success) {
-    return NextResponse.json({ error: "Admin PIN is required." }, { status: 400 });
+    return NextResponse.json({ error: messages.errors.adminPinRequired }, { status: 400 });
   }
 
   const session = await prisma.session.findUnique({
@@ -37,11 +39,11 @@ export async function POST(request: Request, context: RouteContext) {
   });
 
   if (!session) {
-    return NextResponse.json({ error: "Session not found." }, { status: 404 });
+    return NextResponse.json({ error: messages.errors.sessionNotFound }, { status: 404 });
   }
 
   if (normalizeAdminPin(parsed.data.adminPin) !== session.adminPin) {
-    return NextResponse.json({ error: "Invalid admin PIN." }, { status: 403 });
+    return NextResponse.json({ error: messages.errors.invalidAdminPin }, { status: 403 });
   }
 
   const nextState = getNextStage(session.stage, session.currentGinIndex, session.gins.length);

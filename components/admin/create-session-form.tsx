@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { CalendarDays, Plus, Trash2 } from "lucide-react";
 
 import { useLocale } from "@/components/locale-provider";
-import { adminCookieName } from "@/lib/constants";
 
 type GinDraft = {
   id: string;
@@ -15,8 +14,15 @@ type GinDraft = {
   description: string;
 };
 
+let ginDraftCounter = 0;
+
+const nextGinDraftId = () => {
+  ginDraftCounter += 1;
+  return `gin-draft-${ginDraftCounter}`;
+};
+
 const emptyGin = (): GinDraft => ({
-  id: crypto.randomUUID(),
+  id: nextGinDraftId(),
   name: "",
   distillery: "",
   abv: "",
@@ -96,7 +102,6 @@ export function CreateSessionForm() {
       return;
     }
 
-    document.cookie = `${adminCookieName(payload.session.id)}=${encodeURIComponent(payload.adminPin)}; Path=/; Max-Age=2592000; SameSite=Lax`;
     router.push(`/admin/session/${payload.session.id}`);
     router.refresh();
   };

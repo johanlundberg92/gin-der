@@ -19,6 +19,8 @@ export async function GET(request: Request, context: RouteContext) {
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(payload)}\n\n`));
       };
 
+      controller.enqueue(encoder.encode("retry: 1000\n\n"));
+
       const unsubscribe = subscribeToSession(sessionId, send);
       send({ type: "connected", sessionId, at: new Date().toISOString() });
 
@@ -44,6 +46,7 @@ export async function GET(request: Request, context: RouteContext) {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
       Connection: "keep-alive",
+      "X-Accel-Buffering": "no",
     },
   });
 }
