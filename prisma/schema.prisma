@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SessionStage {
+  SETUP
+  LOBBY
+  TASTING
+  REVEAL
+  RESULTS
+  COMPLETED
+}
+
+model Session {
+  id              String        @id @default(cuid())
+  name            String
+  eventDate       DateTime?
+  joinCode        String        @unique
+  adminPin        String
+  stage           SessionStage  @default(SETUP)
+  currentGinIndex Int           @default(0)
+  gins            Gin[]
+  participants    Participant[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
+
+model Gin {
+  id           String        @id @default(cuid())
+  sessionId    String
+  session      Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  order        Int
+  name         String
+  distillery   String?
+  abv          Float?
+  description  String?
+  tastingNotes TastingNote[]
+  createdAt    DateTime      @default(now())
+
+  @@unique([sessionId, order])
+}
+
+model Participant {
+  id           String        @id @default(cuid())
+  sessionId    String
+  session      Session       @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  name         String
+  accessToken  String        @unique
+  tastingNotes TastingNote[]
+  joinedAt     DateTime      @default(now())
+}
+
+model TastingNote {
+  id            String      @id @default(cuid())
+  participantId String
+  participant   Participant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  ginId         String
+  gin           Gin         @relation(fields: [ginId], references: [id], onDelete: Cascade)
+  overallScore  Int
+  juniper       Int
+  citrus        Int
+  floral        Int
+  spice         Int
+  herbal        Int
+  sweetness     Int
+  customNotes   String?
+  submittedAt   DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@unique([participantId, ginId])
+}
